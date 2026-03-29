@@ -1,0 +1,88 @@
+{% extends "product/base.html" %}  <!-- tu apna base template yaha daal sakta hai -->
+
+{% block content %}
+
+<div style="max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; text-align: center;">
+
+    <h2>Checkout Page</h2>
+
+    <hr>
+
+    <!-- Product Details -->
+    <h3>{{ product_name }}</h3>
+    <p style="font-size: 20px; font-weight: bold;">
+        ₹ {{ amount }}
+    </p>
+
+    <hr>
+
+    <!-- Razorpay Button -->
+    <button id="rzp-button1" style="padding: 10px 20px; background-color: #3399cc; color: white; border: none; border-radius: 5px;">
+        Pay Now
+    </button>
+
+</div>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    var options = {
+        "key": "{{ razorpay_key }}",  // Razorpay Key
+        "amount": "{{ amount|floatformat:2|add:'0' }}00",  // amount in paisa
+        "currency": "INR",
+        "name": "My Django Store",
+        "description": "Test Transaction",
+        "order_id": "{{ order_id }}",  // from backend
+        "handler": function(response){
+            alert("Payment Successful!");
+            console.log(response);
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+
+document.getElementByID("rzp-button1").addEventListener
+("click",async function){
+    let response=await fetch(`/create-payment/{{product.id}}/
+    `,{method:"POST"})
+    let data=await response.json()
+    var options = {
+    "key": data.razorpay_key_id, // Enter the Key ID generated from the Dashboard
+    "amount": data.amount, // Amount is in currency subunits. 
+    "currency": "INR",
+    "name": "The Spice King", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "data.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "callback_url":data.razorpay_callback_url,
+    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+        "name": "Aman ", //your customer's name
+        "email": "Aman.kumar@example.com",
+        "contact": "+919876543210" //Provide the customer's phone number for better conversion rates 
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.open();
+}
+</script>
+{% endblock %}
