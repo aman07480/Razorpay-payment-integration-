@@ -15,13 +15,31 @@ class ProductListView(View):
         products=Product.objects.all()
         return render (request,"product/product_list.html", {"products":products})
 
+# class CheckoutView(LoginRequiredMixin, View):
+#     def get(self, request, product_id):
+#         product = get_object_or_404(Product, id=product_id)
+
+#         context = {
+#             "product_name": product.name,
+#             "amount": product.price
+#         }
+
+#         return render(request, "product/checkout.html", context)
+
 class CheckoutView(LoginRequiredMixin, View):
     def get(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
 
+        razorpay_order = client.order.create({
+            "amount": int(product.price * 100),
+            "currency": "INR",
+            "payment_capture": "1"
+        })
+
         context = {
-            "product_name": product.name,
-            "amount": product.price
+            "product": product,
+            "order_id": razorpay_order["id"],
+            "razorpay_key": settings.RAZORPAY_KEY_ID
         }
 
         return render(request, "product/checkout.html", context)
