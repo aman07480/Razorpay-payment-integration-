@@ -69,29 +69,70 @@ class CreatePaymentView(LoginRequiredMixin,View):
             "razorpay_callback_url":settings.RAZORPAY_CALLBACK_URL
         })
     
-class PaymentCallbackView(View):
-    def post(self,request):
-        if "razorpay_signature" in request.POST:
-            order_id=request.POST.get("razorpay_order_id")
-            payment_id=request.POST.get("razorpay_payment_id")
-            signature=request.POST.get("razorpay_signature")
+# class PaymentCallbackView(View): 1
+#     def post(self,request):
+#         if "razorpay_signature" in request.POST:
+#             order_id=request.POST.get("razorpay_order_id")
+#             payment_id=request.POST.get("razorpay_payment_id")
+#             signature=request.POST.get("razorpay_signature")
 
-            order=get_object_or_404(Order,razorpay_order_id=order_id)
+#             order=get_object_or_404(Order,razorpay_order_id=order_id)
 
-            if client.utility.verify_payment_signature({
-                'razorpay_order_id':order_id,
-                'razorpay_payment_id':payment_id,
-                'razorpay_signature':signature,
-            }):
+#             if client.utility.verify_payment_signature({
+#                 'razorpay_order_id':order_id,
+#                 'razorpay_payment_id':payment_id,
+#                 'razorpay_signature':signature,
+#             }):
  
-               order.razorpay_payment_id=payment_id
-               order.razorpay_signature=signature
-               order.is_paid=True
-               order.save()
-               return JsonResponse({"status":"success"})
-            else:
-                order.is_paid=False 
+#                order.razorpay_payment_id=payment_id
+#                order.razorpay_signature=signature
+#                order.is_paid=True
+#                order.save()
+#                return JsonResponse({"status":"success"})
+#             else:
+#                 order.is_paid=False 
+#                 order.save()
+#                 return JsonResponse({"status":"failed"})
+#         else:
+#             return JsonResponse({"status":"failed"})
+
+
+from django.shortcuts import redirect
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PaymentCallbackView(View):
+    def post(self, request):
+        if "razorpay_signature" in request.POST:
+            order_id = request.POST.get("razorpay_order_id")
+            payment_id = request.POST.get("razorpay_payment_id")
+            signature = request.POST.get("razorpay_signature")
+
+            order = get_object_or_404(Order, razorpay_order_id=order_id)
+
+            try:
+                client.utility.verify_payment_signature({
+                    'razorpay_order_id': order_id,
+                    'razorpay_payment_id': payment_id,
+                    'razorpay_signature': signature,
+                })
+
+                order.razorpay_payment_id = payment_id
+                order.razorpay_signature = signature
+                order.is_paid = True
                 order.save()
-                return JsonResponse({"status":"failed"})
-        else:
-            return JsonResponse({"status":"failed"})
+
+                return redirect("payment_success")   # ✅ important
+
+            except:
+                order.is_paid = False
+                order.save()
+                return redirect("product_list")
+
+        return redirect("product_list")
+    
+
+    
+# @method_decorator(csrf_exempt,name='dispatch')
+class PaymentSuccessView(View):
+    def get(self, request):
+        return render(request, "product/success.html")
