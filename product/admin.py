@@ -12,3 +12,5 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_display=["id","user","product","amount","is_paid","created_at"]
     search_fields=["user__username","product__name","razorpay_payment_id","razorpay_signature"]
+
+

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render,get_object_or_404,redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from product.models import Product,Order
+from product.models import CartItem, Product,Order
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 import razorpay
@@ -136,3 +136,38 @@ class PaymentCallbackView(View):
 class PaymentSuccessView(View):
     def get(self, request):
         return render(request, "product/success.html")
+    
+
+class AddToCartView(LoginRequiredMixin, View):
+    def get(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+
+        cart_item, created = CartItem.objects.get_or_create(
+            user=request.user,
+            product=product
+        )
+
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+
+        return redirect("cart")
+
+
+# Cart Page
+class CartView(LoginRequiredMixin, View):
+    def get(self, request):
+        cart_items = CartItem.objects.filter(user=request.user)
+
+        total = sum(item.product.price * item.quantity for item in cart_items)
+
+        return render(request, "product/cart.html", {
+            "cart_items": cart_items,
+            "total": total
+        })
+
+class RemoveFromCartView(LoginRequiredMixin, View):
+    def get(self, request, item_id):
+        item = get_object_or_404(CartItem, id=item_id)
+        item.delete()
+        return redirect("cart")

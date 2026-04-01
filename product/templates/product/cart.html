@@ -1,0 +1,40 @@
+{% extends "product/base.html" %}
+
+{% block content %}
+
+<div class="p-10">
+    <h1 class="text-2xl font-bold mb-5">🛒 My Cart</h1>
+
+    {% for item in cart_items %}
+    <div class="bg-white p-4 mb-3 shadow rounded flex justify-between">
+
+        <div>
+            <h2>{{ item.product.name }}</h2>
+            <p>₹ {{ item.product.price }} × {{ item.quantity }}</p>
+        </div>
+
+        <div>
+            <p class="font-bold">
+                {% comment %} ₹ {{ item.product.price|multiply:item.quantity }} {% endcomment %}
+                ₹ {{ item.product.price }} × {{ item.quantity }}
+            </p>
+
+            <a href="{% url 'remove_from_cart' item.id %}">
+                <button class="bg-red-500 text-white px-3 py-1 mt-2 rounded">
+                    Remove
+                </button>
+            </a>
+        </div>
+
+    </div>
+    {% endfor %}
+
+    <hr class="my-5">
+
+    <h2 class="text-xl font-bold">
+        Total: ₹ {{ total }}
+    </h2>
+
+</div>
+
+{% endblock %}
