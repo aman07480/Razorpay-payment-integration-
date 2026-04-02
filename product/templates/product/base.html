@@ -25,5 +25,23 @@ initial-scale=1.0">
 
     {% block content %}{% endblock %}
 
+<a href="/cart/" class="mr-4">
+    Cart 🛒 
+    <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
+        {{ request.user.cartitem_set.count }}
+    </span>
+</a>
+<span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
+    {{ request.user.cartitem_set.count }}
+</span>
+
+<form method="GET" class="text-center mb-5">
+    <input type="text" name="q" placeholder="Search product..." 
+           class="border p-2 rounded">
+    <button class="bg-blue-500 text-white px-3 py-2 rounded">
+        Search
+    </button>
+</form>
+
 </body>
 </html>
