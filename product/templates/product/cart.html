@@ -11,11 +11,25 @@
         <div>
             <h2>{{ item.product.name }}</h2>
             <p>₹ {{ item.product.price }} × {{ item.quantity }}</p>
+
+            <!-- ✅ Quantity Buttons (NOW INSIDE LOOP) -->
+            <div class="flex items-center gap-3 mt-2">
+
+                <a href="{% url 'update_cart' item.id 'decrease' %}">
+                    <button class="bg-gray-300 px-2">-</button>
+                </a>
+
+                <span>{{ item.quantity }}</span>
+
+                <a href="{% url 'update_cart' item.id 'increase' %}">
+                    <button class="bg-gray-300 px-2">+</button>
+                </a>
+
+            </div>
         </div>
 
         <div>
             <p class="font-bold">
-                {% comment %} ₹ {{ item.product.price|multiply:item.quantity }} {% endcomment %}
                 ₹ {{ item.product.price }} × {{ item.quantity }}
             </p>
 

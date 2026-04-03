@@ -171,3 +171,20 @@ class RemoveFromCartView(LoginRequiredMixin, View):
         item = get_object_or_404(CartItem, id=item_id)
         item.delete()
         return redirect("cart")
+    
+
+class UpdateCartView(LoginRequiredMixin, View):
+    def get(self, request, item_id, action):
+        item = get_object_or_404(CartItem, id=item_id)
+
+        if action == "increase":
+            item.quantity += 1
+
+        elif action == "decrease":
+            item.quantity -= 1
+            if item.quantity <= 0:
+                item.delete()
+                return redirect("cart")
+
+        item.save()
+        return redirect("cart")
