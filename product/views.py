@@ -188,3 +188,16 @@ class UpdateCartView(LoginRequiredMixin, View):
 
         item.save()
         return redirect("cart")
+    
+class CartCheckoutView(LoginRequiredMixin, View):
+    def get(self, request):
+        cart_items = CartItem.objects.filter(user=request.user)
+
+        total = sum(item.product.price * item.quantity for item in cart_items)
+
+        context = {
+            "product_name": "Cart Items",
+            "amount": total
+        }
+
+        return render(request, "product/checkout.html", context)
