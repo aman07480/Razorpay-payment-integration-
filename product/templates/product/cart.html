@@ -49,15 +49,25 @@
         Total: ₹ {{ total }}
     </h2>
 
-</div>
-<div class="mt-5 text-center">
+    <div class="mt-5 flex justify-between">
 
-    <a href="{% url 'cart_checkout' %}">
-        <button class="bg-green-500 text-white px-6 py-2 rounded-lg">
-            Proceed to Checkout 💳
-        </button>
-    </a>
+        <a href="{% url 'clear_cart' %}">
+           <button class="bg-red-600 text-white px-5 py-2 rounded-lg">
+            🗑️ Clear Cart
+           </button>
+        </a>
 
-</div>
+    </div>
+
+    <div class="mt-5 text-center">
+
+        <a href="{% url 'cart_checkout' %}">
+           <button class="bg-green-500 text-white px-6 py-2 rounded-lg">
+              Proceed to Checkout 💳
+            </button>
+        </a>
+
+    </div>
+
 
 {% endblock %}

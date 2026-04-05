@@ -201,3 +201,9 @@ class CartCheckoutView(LoginRequiredMixin, View):
         }
 
         return render(request, "product/checkout.html", context)
+
+
+class ClearCartView(LoginRequiredMixin, View):
+    def get(self, request):
+        CartItem.objects.filter(user=request.user).delete()
+        return redirect("cart") 
