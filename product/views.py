@@ -127,8 +127,9 @@ class PaymentCallbackView(View):
                 order.is_paid = False
                 order.save()
                 return redirect("product_list")
-
+            
         return redirect("product_list")
+    
     
 
     
@@ -207,3 +208,8 @@ class ClearCartView(LoginRequiredMixin, View):
     def get(self, request):
         CartItem.objects.filter(user=request.user).delete()
         return redirect("cart") 
+    
+class OrderHistoryView(LoginRequiredMixin, View):
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user).order_by("-id")
+        return render(request, "product/order_history.html", {"orders": orders})
