@@ -213,3 +213,17 @@ class OrderHistoryView(LoginRequiredMixin, View):
     def get(self, request):
         orders = Order.objects.filter(user=request.user).order_by("-id")
         return render(request, "product/order_history.html", {"orders": orders})
+    
+class ProductListView(View):
+    def get(self, request):
+        query = request.GET.get("q")
+
+        if query:
+            products = Product.objects.filter(name__icontains=query)
+        else:
+            products = Product.objects.all()
+
+        return render(request, "product/product_list.html", {
+            "products": products,
+            "query": query
+        })
