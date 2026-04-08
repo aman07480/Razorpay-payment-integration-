@@ -36,6 +36,16 @@
 
     </div>
 </div>
+<form method="GET" class="mb-5 flex gap-2 justify-center">
+    <input type="text" name="q" placeholder="Search product..."
+           value="{{ query }}"
+           class="border px-3 py-2 rounded w-64">
+
+    <button type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded">
+        Search
+    </button>
+</form>
 
 {% endblock %}
 
