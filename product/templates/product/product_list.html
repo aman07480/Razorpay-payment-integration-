@@ -46,6 +46,9 @@
         Search
     </button>
 </form>
+{% if not products %}
+<p class="text-center text-red-500">No products found 😢</p>
+{% endif %}
 
 {% endblock %}
 
