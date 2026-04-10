@@ -45,6 +45,12 @@
             class="bg-blue-500 text-white px-4 py-2 rounded">
         Search
     </button>
+    {% if product.image %}
+    <img src="{{ product.image.url }}" 
+         class="w-full h-40 object-cover rounded mb-2">
+{% else %}
+    <p>No Image</p>
+{% endif %}
 </form>
 {% if not products %}
 <p class="text-center text-red-500">No products found 😢</p>
