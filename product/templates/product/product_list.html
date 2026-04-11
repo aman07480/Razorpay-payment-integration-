@@ -54,6 +54,18 @@
 </form>
 {% if not products %}
 <p class="text-center text-red-500">No products found 😢</p>
+
+{% if product.stock > 0 %}
+    <a href="{% url 'Checkout' product.id %}">
+        <button class="bg-green-500 text-white px-3 py-1 rounded">
+            Buy Now
+        </button>
+    </a>
+{% else %}
+    <button class="bg-gray-400 text-white px-3 py-1 rounded cursor-not-allowed">
+        Out of Stock ❌
+    </button>
+{% endif %}
 {% endif %}
 
 {% endblock %}
